@@ -151,30 +151,32 @@ class mttr_custom_post_type_mttr_faqs {
 
 	    foreach ( $form['fields'] as &$field ) {
 
-	        if ( $field->type != 'select' && $field->type != 'radio' && $field->type != 'checkbox' && strpos( $field->cssClass, 'mttr-cpt-faqs' ) === false ) {
-	            continue;
-	        }
+	    	$needle = strpos( $field->cssClass, 'mttr-cpt-faqs' );
 
-	        // you can add additional parameters here to alter the posts that are retrieved
-	        // more info: [http://codex.WordPress.org/Template_Tags/get_posts](http://codex.WordPress.org/Template_Tags/get_posts)
-	        $posts = get_posts( 'numberposts=-1&post_status=publish&post_type=' . self::$slug . '&order=ASC&orderby=title' );
+			if ( ( $field->type == 'select' || $field->type == 'radio' || $field->type == 'checkbox' ) && $needle !== false ) {
 
-	        if ( is_array( $posts ) && !empty( $posts ) ) {
+				// you can add additional parameters here to alter the posts that are retrieved
+				// more info: [http://codex.WordPress.org/Template_Tags/get_posts](http://codex.WordPress.org/Template_Tags/get_posts)
+				$posts = get_posts( 'numberposts=-1&post_status=publish&post_type=' . self::$slug . '&order=ASC&orderby=title' );
 
-		        $choices = array();
+				if ( is_array( $posts ) && !empty( $posts ) ) {
 
-		        foreach ( $posts as $post ) {
+					$choices = array();
 
-		            $choices[] = array( 'text' => $post->post_title, 'value' => $post->post_title );
+					foreach ( $posts as $post ) {
 
-		        }
+						$choices[] = array( 'text' => $post->post_title, 'value' => $post->post_title );
 
-		        // update 'Select a Post' to whatever you'd like the instructive option to be
-		        $field->choices = $choices;
+					}
 
-		    }
+					// update 'Select a Post' to whatever you'd like the instructive option to be
+					$field->choices = $choices;
 
-	    }
+				}
+
+			}
+
+    	}
 
 	    return $form;
 	}
